@@ -67,7 +67,7 @@ export default {
   },
   methods: {
     submitForm(formName) {
-      this.$router.push('/index')
+      this.$router.push('/')
       this.$refs[formName].validate(valid => {
         if (valid) {
           alert("submit!");
