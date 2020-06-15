@@ -9,3 +9,7 @@
 # src02
 
 商品展示+购物车页面+vuex
+
+
+
+@JackieDYH
