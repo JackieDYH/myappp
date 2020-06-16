@@ -9,24 +9,46 @@
       stripe 条纹
       border 边框
       data 数据
+      row-key 树型结构
+      tree-props 绑定数据
+      v-loading.fullscreen.lock 加载中效果
     -->
-    <el-table :data="menus" stripe border style="width: 100%">
+    <el-table 
+      :data="menus" 
+      stripe 
+      border 
+      style="width: 100%"
+      row-key="id"
+      :tree-props="{children:'children'}"
+
+      v-loading.fullscreen.lock="loading"
+      element-loading-text="拼命加载中"
+      element-loading-spinner="el-icon-loading"
+      element-loading-background="rgba(0, 0, 0, 0.6)"
+      
+    >
       <!-- 
         prop 绑定数据
       -->
-      <el-table-column prop="title" label="菜单名称" width="150"></el-table-column>
-      <el-table-column prop="parentmenu" label="上级菜单"></el-table-column>
-      <el-table-column prop="icon" label="菜单图标"></el-table-column>
-      <el-table-column prop="address" label="菜单地址"></el-table-column>
-      <el-table-column label="状态" width="180">
+      <el-table-column prop="" label="层级" width="50"></el-table-column>
+      <el-table-column prop="title" label="菜单名称"></el-table-column>
+      <!-- <el-table-column prop="pid" label="上级菜单"></el-table-column> -->
+      <el-table-column prop="icon" label="菜单图标">
         <template slot-scope="item">
-          <el-switch v-model="item.row.status"></el-switch>
+          <i :class="item.row.icon"></i> / {{ item.row.icon }}
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="200">
+      <el-table-column prop="url" label="菜单地址"></el-table-column>
+      <el-table-column label="状态" width="150">
+        <template slot-scope="item">
+          <el-button type="success" icon="el-icon-check" circle v-if="item.row.status == 1"></el-button>
+          <el-button type="info" icon="el-icon-close" circle v-else></el-button>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" width="180">
         <template slot-scope="scope">
-          <el-button size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-button size="mini" type="primary" @click="edit(scope.row.id)">编辑</el-button>
+          <el-button size="mini" type="danger" @click="del(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -37,45 +59,89 @@
 export default {
   data() {
     return {
-      menus: [
-        {
-          title: "系统设置",
-          icon: "icon-s-tools",
-          address: "",
-          parentmenu: "",
-          status: true
-        },
-        {
-          title: "菜单管理",
-          icon: "icon-s-tools",
-          address: "/list",
-          parentmenu: "系统设置",
-          status: true
-        },
-        {
-          title: "用户管理",
-          icon: "icon-s-tools",
-          address: "/user",
-          parentmenu: "系统设置",
-          status: false
-        }
-      ]
+      menus:[],
+      loading:true,
+
     };
   },
+  mounted(){
+    //加载效果
+    setTimeout(() => {
+      this.loading = false;
+    }, 600);
+
+    // this.$axios.get('/api/menulist').then(res=>{
+    //   // console.log(res)
+    //   this.menus = res.data.list;
+    // })
+    //添加istree 返回树形结构的数据 获取菜单列表
+    this.$axios({
+      url:'/api/menulist',
+      params:{istree:1}
+    }).then(res=>{
+      this.$message({
+        type: 'success',
+        message: '恭喜你，菜单数据获取成功',
+      });
+      // console.log(res.data.list,111)
+      this.menus = res.data.list;
+    })
+  },
   methods: {
-    handleEdit(id, row) {
-      console.log(id, row);
+    edit(id) {
+      // console.log(id);
+      // console.log(this.$route)
+      // 携带对应菜单id 修改 方式一
+      // this.$router.push({name:'listinfomid',params:{uid:id}});
+      // 方式二 拼接
+      this.$router.push('/list/'+id);
     },
-    handleDelete(id, row) {
-      console.log(id, row);
+    del(id) {
+      console.log(id)
+      this.$confirm('此操作将永久删除该菜单, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          //确定
+          this.$axios({
+            url:'/api/menudelete', //请求地址
+            method:'post',//请求方式 默认get
+            data:{id:id},//可以简写 data{id}
+          }).then(res=>{
+            if(res.data.code === 200){
+              this.$bus.$emit('upMenu','delMenu');
+              this.menus = res.data.list;//给页面中的数据重新赋值，实现数据变化，页面自动渲染的效果
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              });
+            }else{
+              //删除失败
+              this.$message({
+                type: 'error',
+                message: res.data.msg,
+              });   
+            }
+          });
+        }).catch(() => {
+          //取消
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
     }
   },
   
 };
 </script>
 
-<style scoped>
+<style>
 .addbtn {
   margin-bottom: 10px;
+}
+.el-table td, .el-table th{
+  text-align :center
 }
 </style>

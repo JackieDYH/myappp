@@ -11,13 +11,12 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {//配置代理请求
-      '/dyh':{
-        target:'http://suggestion.baidu.com',//转发目标地址
-        changeOrigin:true,//运行跨域
-        pathRewrite:{
-          '^/dyh':''
-        }
-
+      '/api':{
+        target:'http://localhost:3000',//转发目标地址
+        changeOrigin:true,//允许跨域
+        // pathRewrite:{
+        //   '^/dyh':'' //替换为空 自己填写的
+        // }
       }
     },
 

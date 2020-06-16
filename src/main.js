@@ -11,13 +11,17 @@ import store from './store'
 // import jq from 'jquery'
 // Vue.prototype.$ = jq;
 // import 'bootstrap/dist/css/bootstrap.min.css'
-
+// 引入UI库
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 Vue.use(ElementUI);
 
 // 把vue实例当成一个公共的容器,挂载到vue实例的原型上
 Vue.prototype.$bus = new Vue();
+
+// 引入axios 并挂载到原型上
+import axios from 'axios'
+Vue.prototype.$axios = axios
 
 Vue.config.productionTip = false
 

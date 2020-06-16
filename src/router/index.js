@@ -47,6 +47,12 @@ let router = new Router({
           component:()=>import('@/components/pages/menu/info')
         },
         {
+          path:'list/:mid',
+          meta:{select:'/list'},
+          name:'listinfomid',
+          component:()=>import('@/components/pages/menu/info')
+        },
+        {
           path:'user',
           meta:{select:'/user'},
           name:'user',

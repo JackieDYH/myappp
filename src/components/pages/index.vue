@@ -8,23 +8,23 @@
         <router-view></router-view>
       </el-main>
     </el-container>
-    <el-footer>版权所有DYH</el-footer>
+    <el-footer>版权所有 &copy; DYH 2020</el-footer>
   </el-container>
 </template>
 
 <script>
 import vNav from '../views/nav'
-import axios from 'axios'
 export default {
     components:{
       vNav
     },
     mounted(){
+      // console.log(this)
         // console.log(this.$router)
         // console.log(this.$route.path)
-        axios.get("/dyh/su?cb=&wd=北京").then(res=>{
-          console.log(res,'dyh跨域请求测试')
-        })
+        // axios.get("/dyh/su?cb=&wd=北京").then(res=>{
+        //   console.log(res,'dyh跨域请求测试')
+        // })
     },
     //组件守卫
     beforeRouteEnter(to,from,next){
@@ -44,11 +44,12 @@ export default {
   line-height: 2;
   font-size: 24px;
   color: #fff;
-  background-color: #9e9e9e;
+  background-color: #5a69ca;
 }
 .el-footer {
   text-align: center;
   line-height: 60px;
-  background-color: #999;
+  color: rgb(223, 219, 219);
+  background-color: #68717a;
 }
 </style>
