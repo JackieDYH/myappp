@@ -10,7 +10,16 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {//配置代理请求
+      '/dyh':{
+        target:'http://suggestion.baidu.com',//转发目标地址
+        changeOrigin:true,//运行跨域
+        pathRewrite:{
+          '^/dyh':''
+        }
+
+      }
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST

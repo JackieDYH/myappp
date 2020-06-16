@@ -10,9 +10,11 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "bootstrap": "^3.4.1",
     "element-ui": "^2.13.2",
     "jquery": "^3.5.1",
+    "save": "^2.4.0",
     "stylus": "^0.54.7",
     "stylus-loader": "^3.0.2",
     "vue": "^2.5.2",

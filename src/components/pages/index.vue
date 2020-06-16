@@ -14,6 +14,7 @@
 
 <script>
 import vNav from '../views/nav'
+import axios from 'axios'
 export default {
     components:{
       vNav
@@ -21,6 +22,9 @@ export default {
     mounted(){
         // console.log(this.$router)
         // console.log(this.$route.path)
+        axios.get("/dyh/su?cb=&wd=北京").then(res=>{
+          console.log(res,'dyh跨域请求测试')
+        })
     },
     //组件守卫
     beforeRouteEnter(to,from,next){
