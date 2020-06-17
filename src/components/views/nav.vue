@@ -24,7 +24,7 @@
         <span slot="title">首页</span>
       </el-menu-item>
       <el-submenu
-        index="menu.id"
+        :index="menu.id.toString()"
         v-for="menu of menus"
         :key="menu.id"
         :disabled="menu.status == 1 ? false : true"
@@ -33,8 +33,8 @@
           <i :class="menu.icon"></i>
           <span>{{ menu.title }}</span>
         </template>
-        <el-menu-item-group v-for="sub of menu.children" :key="sub.id">
-          <el-menu-item :index="sub.url" :disabled="sub.status == 1 ? false : true">{{sub.title}}</el-menu-item>
+        <el-menu-item-group>
+          <el-menu-item  v-for="sub of menu.children" :key="sub.id" :index="sub.url" :disabled="sub.status == 1 ? false : true">{{sub.title}}</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
       <!-- <el-submenu index="1">
@@ -72,34 +72,42 @@ export default {
       menus: []
     };
   },
-  mounted() {
-    //页面加载时，控住左侧菜单选中效果
-    //把当前路由中的meta的自定义属性赋值给默认选中变量
-    // console.log(this.$route);
-    // this.defaultActive = this.$route.meta.select;
-    this.$axios({
-      url: "/api/menulist",
-      params: { istree: 1 }
-    }).then(res => {
-      this.menus = res.data.list;
-      console.log(res, this.menus);
-    });
-    this.$bus.$on("upMenu", (i) => {
-      console.log(i)
+  methods: {
+    getNavlist() {
       this.$axios({
         url: "/api/menulist",
         params: { istree: 1 }
       }).then(res => {
         this.menus = res.data.list;
+        // console.log(res, this.menus);
       });
+    }
+  },
+  mounted() {
+    //页面加载时，控住左侧菜单选中效果
+    //把当前路由中的meta的自定义属性赋值给默认选中变量
+    // console.log(this.$route);
+    // 监听路由地址的改变 方法一
+    // this.defaultActive = this.$route.meta.select;
+
+    // 获取菜单列表
+    this.getNavlist();
+
+    //方式一动态改变 监听方式  删除时使用
+    this.$bus.$on("upMenu", i => {
+      console.log(i);
+      this.getNavlist();
     });
   },
   watch: {
     // 监听route的地址变化 并改变数据
     $route(newVal, oldVal) {
       // console.log('当前访问地址',newVal.meta.select,'\n','旧地址',oldVal.meta.select);
-      // 监听路由地址的改变
+      // 监听路由地址的改变 方法一
       // this.defaultActive = newVal.meta.select;
+
+      //方式二动态改变 监听方式
+      this.getNavlist();
     }
   }
 };

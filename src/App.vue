@@ -11,6 +11,11 @@
 .el-breadcrumb{
   padding: 0 0 20px;
 }
+/* 分页组件 */
+.el-pagination{
+  float: right;
+  margin-top: 6px;
+}
 </style>
 <script>
 export default {

@@ -35,22 +35,40 @@ let router = new Router({
           component:()=>import('@/components/pages/home')
         },
         {
-          path:'list',
-          meta:{select:'/list'},
-          name:'list',
+          path:'menu',
+          meta:{select:'/menu'},
+          name:'menu',
           component:()=>import('@/components/pages/menu/list')
         },
         {
-          path:'list/info',
-          meta:{select:'/list'},
-          name:'listinfo',
+          path:'menu/info',
+          meta:{select:'/menu'},
+          name:'menuinfo',
           component:()=>import('@/components/pages/menu/info')
         },
         {
-          path:'list/:mid',
-          meta:{select:'/list'},
-          name:'listinfomid',
+          path:'menu/:mid',
+          meta:{select:'/menu'},
+          name:'menuinfomid',
           component:()=>import('@/components/pages/menu/info')
+        },
+        {
+          path:'role',
+          meta:{select:'/role'},
+          name:'role',
+          component:()=>import('@/components/pages/role/list')
+        },
+        {
+          path:'role/info',
+          meta:{select:'/role'},
+          name:'roleinfo',
+          component:()=>import('@/components/pages/role/info')
+        },
+        {
+          path:'role/:mid',
+          meta:{select:'/role'},
+          name:'roleinfomid',
+          component:()=>import('@/components/pages/role/info')
         },
         {
           path:'user',
@@ -62,6 +80,12 @@ let router = new Router({
           path:'user/info',
           meta:{select:'/user'},
           name:'userinfo',
+          component:()=>import('@/components/pages/user/info')
+        },
+        {
+          path:'user/:uid',
+          meta:{select:'/user'},
+          name:'userinfomid',
           component:()=>import('@/components/pages/user/info')
         },
         {

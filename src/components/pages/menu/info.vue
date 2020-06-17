@@ -3,7 +3,7 @@
     <!-- 面包屑导航 -->
     <el-breadcrumb separator="/">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/list' }">菜单管理</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/menu' }">菜单管理</el-breadcrumb-item>
       <el-breadcrumb-item>菜单{{ tip }}</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 
@@ -132,7 +132,8 @@ export default {
             // 加载效果
             this.loading = true;
             if (res.data.code == 200) {
-            this.$bus.$emit('upMenu','updateMenu');
+            // 采用方式二 实现页面更新
+            // this.$bus.$emit('upMenu','updateMenu');
               this.$notify({
                 title: "成功",
                 message: `菜单已经${this.tip}成功!`,
@@ -140,7 +141,7 @@ export default {
               });
               setTimeout(() => {
                 this.loading = false;
-                this.$router.push("/list");
+                this.$router.push("/menu");
                 // this.$forceUpdate();
               }, 600);
             } else {
@@ -157,8 +158,10 @@ export default {
         }
       });
     },
+    //取消
     resetForm(formName) {
-      this.$refs[formName].resetFields();
+      this.$router.push("/menu");
+      // this.$refs[formName].resetFields();
     }
   }
 };
