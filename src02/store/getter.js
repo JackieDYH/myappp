@@ -16,7 +16,7 @@ export default {
         });
         state.checkAll = state.cartGoods.every(item=>item.ischeck);
         let checkAll = state.checkAll
-        console.log(sum,state.checkAll,checkAll,'sum+all');
+        // console.log(sum,state.checkAll,checkAll,'sum+all');
         return {sum,checkAll};
     }
 }

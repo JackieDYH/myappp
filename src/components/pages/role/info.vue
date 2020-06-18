@@ -3,7 +3,7 @@
     <!-- 面包屑导航 -->
     <el-breadcrumb separator="/">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/menu' }">角色管理</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/role' }">角色管理</el-breadcrumb-item>
       <el-breadcrumb-item>角色{{ tip }}</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 
@@ -30,6 +30,7 @@
           :data="menus" 
           :props="defaultProps" 
           show-checkbox
+          check-strictly
           ref="tree"
           node-key='id'
           default-expand-all
@@ -67,7 +68,7 @@ export default {
       rules: {
         rolename: [
           { required: true, message: "请输入角色名称", trigger: "blur" },
-          { min: 1, max: 8, message: "请输入1到8个汉字", trigger: "blur" }
+          { min: 1, max: 16, message: "请输入1到16个汉字", trigger: "blur" }
         ],
       }
     };
@@ -80,11 +81,8 @@ export default {
     if (mid) {
       this.tip = "修改";
       // 获取路由传递过来的mid获取对应的菜单数据
-      this.$axios({
-        url: "/api/roleinfo",
-        params: { id: mid }
-      }).then(res => {
-        console.log(res);
+      this.$http.get("/api/roleinfo", { id: mid }).then(res => {
+        // console.log(res);
         this.role = res.data.list;
         // 匹配数据类型
         this.role.status = this.role.status == 1 ? true : false;
@@ -92,10 +90,7 @@ export default {
       });
     }
     // 获取已有的菜单选项
-    this.$axios({
-      url:'/api/menulist',
-      params:{istree:1}
-    }).then(res=>{
+    this.$http.get('/api/menulist', {istree:1}).then(res=>{
       this.menus = res.data.list;
     })
   },
@@ -124,7 +119,7 @@ export default {
           data.type == 1 ? data.url = '' : data.icon = '';
 
           //发起post请求，请求接口项目中的菜单添加接口，完成数据的保存
-          this.$axios.post(url, data).then(res => {
+          this.$http.post(url, data).then(res => {
             console.log(res);
             // 加载效果
             this.loading = true;

@@ -17,6 +17,10 @@ module.exports = {
         // pathRewrite:{
         //   '^/dyh':'' //替换为空 自己填写的
         // }
+      },
+      '/uploads':{
+        target:'http://localhost:3000',
+        changeOrigin:true,
       }
     },
 

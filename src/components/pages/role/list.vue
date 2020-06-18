@@ -15,6 +15,9 @@
       element-loading-spinner="el-icon-loading"
       element-loading-background="rgba(0, 0, 0, 0.6)"
     >
+      <el-table-column label="序号" width="80">
+        <template slot-scope="item">{{item.$index}}</template>
+      </el-table-column>
       <el-table-column prop="id" label="角色编号"></el-table-column>
       <el-table-column prop="rolename" label="角色名称"></el-table-column>
       <el-table-column label="状态" width="180">
@@ -57,16 +60,13 @@ export default {
   },
   methods: {
     // 子父组件通讯
-    mdel(i){
+    mdel(i) {
       this.getRole();
-      console.log('子父组件通讯操作',i);
+      console.log("子父组件通讯操作", i);
     },
     //获取角色列表
     getRole() {
-      this.$axios({
-        url: "/api/rolelist"
-        // params:{istree:1}
-      }).then(res => {
+      this.$http.get("/api/rolelist").then(res => {
         this.$message({
           type: "success",
           message: "最新数据获取成功"
@@ -80,8 +80,7 @@ export default {
       // console.log(this.$route)
       // 方式二 拼接
       this.$router.push("/role/" + id);
-    },
-   
+    }
   },
   watch: {
     $route(newVal, oldVal) {

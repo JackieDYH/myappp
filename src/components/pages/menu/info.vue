@@ -73,7 +73,7 @@ export default {
       rules: {
         title: [
           { required: true, message: "请输入菜单名称", trigger: "blur" },
-          { min: 1, max: 8, message: "请输入1到8个汉字", trigger: "blur" }
+          { min: 1, max: 16, message: "请输入1到16个汉字", trigger: "blur" }
         ],
         pid: [{ required: true, message: "请选择上级菜单", trigger: "change" }]
       }
@@ -87,10 +87,11 @@ export default {
     if (mid) {
       this.tip = "修改";
       // 获取路由传递过来的mid获取对应的菜单数据
-      this.$axios({
-        url: "/api/menuinfo",
-        params: { id: mid }
-      }).then(res => {
+      // this.$axios({
+      //   url: "/api/menuinfo",
+      //   params: { id: mid }
+      // })
+      this.$http.get("/api/menuinfo",{ id: mid }).then(res => {
         console.log(res);
         this.menus = res.data.list;
         // 匹配数据类型
@@ -98,10 +99,11 @@ export default {
       });
     }
     //获取一级菜单
-    this.$axios({
-      url: "/api/menulist", //菜单列表
-      params: { istree: 1 }
-    }).then(res => {
+    // this.$axios({
+    //   url: "/api/menulist", //菜单列表
+    //   params: { istree: 1 }
+    // })
+    this.$axios("/api/menulist", { istree: 1 }).then(res => {
       this.pidmenu = res.data.list; //动态设置上级菜单下拉列表
     });
   },
@@ -127,7 +129,7 @@ export default {
           
 
           //发起post请求，请求接口项目中的菜单添加接口，完成数据的保存
-          this.$axios.post(url, data).then(res => {
+          this.$http.post(url, data).then(res => {
             console.log(res);
             // 加载效果
             this.loading = true;

@@ -74,13 +74,19 @@ export default {
   },
   methods: {
     getNavlist() {
-      this.$axios({
-        url: "/api/menulist",
-        params: { istree: 1 }
-      }).then(res => {
-        this.menus = res.data.list;
-        // console.log(res, this.menus);
-      });
+      // 调用api 开发时使用
+      // this.$axios({
+      //   url: "/api/menulist",
+      //   params: { istree: 1 }
+      // }).then(res => {
+      //   this.menus = res.data.list;
+      //   // console.log(res, this.menus);
+      // });
+      // 使用用户登录后的菜单 判断用户
+      if(sessionStorage.getItem("userinfo")){
+        let nav = JSON.parse(sessionStorage.getItem("userinfo"));
+        this.menus = nav.menus;
+      }
     }
   },
   mounted() {

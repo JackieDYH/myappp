@@ -12,94 +12,147 @@ Router.prototype.push = function push(location) {
 let router = new Router({
   routes: [
     {
-      path:'/login',
-      name:'login',
-      component:()=>import('@/components/pages/login')
+      path: '/login',
+      name: 'login',
+      component: () => import('@/components/pages/login')
     },
     {
-      path:'/register',
-      name:'register',
-      component:()=>import('@/components/pages/register')
+      path: '/register',
+      name: 'register',
+      component: () => import('@/components/pages/register')
     },
     {
-      path:'/',
-      meta:{select:'/'},
+      path: '/',
+      meta: { select: '/' },
       // name:'index', //删除父级name属性 不会再报警告了⚠
-      component:()=>import('@/components/pages/index'),
-      children:[
+      component: () => import('@/components/pages/index'),
+      children: [
         {
-          path:'home',
+          path: 'home',
           //在meta中设置一个自定义属性，用来告知页面加载时，左侧哪个菜单选中
-          meta:{select:'/home'},
-          name:'home',
-          component:()=>import('@/components/pages/home')
+          meta: { select: '/home' },
+          name: 'home',
+          component: () => import('@/components/pages/home')
         },
         {
-          path:'menu',
-          meta:{select:'/menu'},
-          name:'menu',
-          component:()=>import('@/components/pages/menu/list')
+          path: 'menu',
+          meta: { select: '/menu' },
+          name: 'menu',
+          component: () => import('@/components/pages/menu/list')
         },
         {
-          path:'menu/info',
-          meta:{select:'/menu'},
-          name:'menuinfo',
-          component:()=>import('@/components/pages/menu/info')
+          path: 'menu/info',
+          meta: { select: '/menu' },
+          name: 'menuinfo',
+          component: () => import('@/components/pages/menu/info')
         },
         {
-          path:'menu/:mid',
-          meta:{select:'/menu'},
-          name:'menuinfomid',
-          component:()=>import('@/components/pages/menu/info')
+          path: 'menu/:mid',
+          meta: { select: '/menu' },
+          name: 'menuinfomid',
+          component: () => import('@/components/pages/menu/info')
         },
         {
-          path:'role',
-          meta:{select:'/role'},
-          name:'role',
-          component:()=>import('@/components/pages/role/list')
+          path: 'role',
+          meta: { select: '/role' },
+          name: 'role',
+          component: () => import('@/components/pages/role/list')
         },
         {
-          path:'role/info',
-          meta:{select:'/role'},
-          name:'roleinfo',
-          component:()=>import('@/components/pages/role/info')
+          path: 'role/info',
+          meta: { select: '/role' },
+          name: 'roleinfo',
+          component: () => import('@/components/pages/role/info')
         },
         {
-          path:'role/:mid',
-          meta:{select:'/role'},
-          name:'roleinfomid',
-          component:()=>import('@/components/pages/role/info')
+          path: 'role/:mid',
+          meta: { select: '/role' },
+          name: 'roleinfomid',
+          component: () => import('@/components/pages/role/info')
         },
         {
-          path:'user',
-          meta:{select:'/user'},
-          name:'user',
-          component:()=>import('@/components/pages/user/list')
+          path: 'user',
+          meta: { select: '/user' },
+          name: 'user',
+          component: () => import('@/components/pages/user/list')
         },
         {
-          path:'user/info',
-          meta:{select:'/user'},
-          name:'userinfo',
-          component:()=>import('@/components/pages/user/info')
+          path: 'user/info',
+          meta: { select: '/user' },
+          name: 'userinfo',
+          component: () => import('@/components/pages/user/info')
         },
         {
-          path:'user/:uid',
-          meta:{select:'/user'},
-          name:'userinfomid',
-          component:()=>import('@/components/pages/user/info')
+          path: 'user/:uid',
+          meta: { select: '/user' },
+          name: 'userinfomid',
+          component: () => import('@/components/pages/user/info')
         },
         {
-          path:'',
-          redirect:'/home'
+          path: 'category',
+          meta: { select: '/category' },
+          name: 'category',
+          component: () => import('@/components/pages/category/list')
+        },
+        {
+          path: 'category/info',
+          meta: { select: '/category' },
+          name: 'categoryinfo',
+          component: () => import('@/components/pages/category/info')
+        },
+        {
+          path: 'category/:uid',
+          meta: { select: '/category' },
+          name: 'categoryinfomid',
+          component: () => import('@/components/pages/category/info')
+        },
+        {
+          path: '',
+          redirect: '/home'
         }
       ]
     },
     {
-      path:'*',
-      redirect:'/index'
+      path: '*',
+      redirect: '/index'
     }
   ],
   // mode:"history",//路由模式 默认hash
+})
+
+// 全局守卫
+router.beforeEach((to, form, next) => {
+  // console.log(to,from,next)
+  let userinfo = JSON.parse(sessionStorage.getItem("userinfo"));
+  if (userinfo) {
+    //根据用户权限，对用户访问路由验证是否合法
+    // 追加首页路由权限
+    userinfo.menus_url.push("/");
+    userinfo.menus_url.push("/home");
+    // 允许访问路由地址
+    let menuarr = userinfo.menus_url;
+    //处理添加的路由规则 只匹配第一级路由即可
+    let nowpatharr = to.path.split('/'); // 匹配父级路由即可
+    let nowpath = '/' + nowpatharr[1];
+    let res = menuarr.find(item => {
+      // 判断用户访问的路由在数组中是否存在
+      return item == nowpath;
+    });
+    if (res) {
+      next();
+    } else {
+      // alert("非法访问");
+      // next("/");
+      next();//执行默认路由 让其触发index.vue中的组件守卫规则弹出提醒
+    }
+  } else {
+    if (to.fullPath == '/login' || to.fullPath == '/register') {
+      next();
+    } else {
+      alert("您还没有登录，请先登录！");
+      next('/login');
+    }
+  }
 })
 
 export default router;

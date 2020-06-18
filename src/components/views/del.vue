@@ -18,11 +18,12 @@ export default {
       })
         .then(() => {
           //确定
-          this.$axios({
-            url: this.url, //请求地址
-            method: "post", //请求方式 默认get
-            data: { id: this.id } //可以简写 data{id}
-          }).then(res => {
+          // this.$axios({
+          //   url: this.url, //请求地址
+          //   method: "post", //请求方式 默认get
+          //   data: { id: this.id } //可以简写 data{id}
+          // })
+          this.$http.post(this.url, { id: this.id }).then(res => {
             if (res.data.code === 200) {
               //子父组件通讯
               this.$emit("mdel", "delete");

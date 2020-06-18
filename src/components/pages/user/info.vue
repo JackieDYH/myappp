@@ -66,7 +66,7 @@ export default {
       rules: {
         username: [
           { required: true, message: "请输入用户名", trigger: "blur" },
-          { min: 1, max: 8, message: "请输入1到8个汉字", trigger: "blur" }
+          { min: 1, max: 16, message: "请输入1到16个汉字", trigger: "blur" }
         ],
         roleid: [{ required: true, message: "请选择所属角色", trigger: "change" }]
       }
@@ -80,11 +80,8 @@ export default {
     if (uid) {
       this.tip = "修改";
       // 获取路由传递过来的uid获取对应的菜单数据
-      this.$axios({
-        url: "/api/userinfo",
-        params: { uid: uid }
-      }).then(res => {
-        console.log(res);
+      this.$http.get("/api/userinfo", { uid: uid }).then(res => {
+        // console.log(res);
         this.user = res.data.list;
         // 匹配数据类型
         this.user.password = '';//为空不修改密码
@@ -92,10 +89,7 @@ export default {
       });
     }
     //获取角色列表
-    this.$axios({
-      url: "/api/rolelist", //菜单列表
-      params: { istree: 1 }
-    }).then(res => {
+    this.$http.get("/api/rolelist", { istree: 1 }).then(res => {
       this.roles = res.data.list; //动态设置上级菜单下拉列表
     });
   },
@@ -119,7 +113,7 @@ export default {
           // console.log(data);return;
 
           //发起post请求，请求接口项目中的菜单添加接口，完成数据的保存
-          this.$axios.post(url, data).then(res => {
+          this.$http.post(url, data).then(res => {
             console.log(res);
             // 加载效果
             this.loading = true;

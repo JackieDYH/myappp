@@ -15,6 +15,9 @@
       element-loading-spinner="el-icon-loading"
       element-loading-background="rgba(0, 0, 0, 0.6)"
     >
+      <el-table-column label="序号" width="80">
+        <template slot-scope="item">{{item.$index}}</template>
+      </el-table-column>
       <el-table-column prop="uid" label="UID"></el-table-column>
       <el-table-column prop="username" label="用户名"></el-table-column>
       <el-table-column prop="rolename" label="所属角色"></el-table-column>
@@ -61,7 +64,7 @@ export default {
     return {
       users: [],
       total: 0, //用户总条数
-      pagesize: 2, //每页显示条数
+      pagesize: 4, //每页显示条数
       nowpage: 1, //当前页码值
       loading: true
     };
@@ -80,8 +83,8 @@ export default {
   },
   methods: {
     //删除
-    mdel(i){
-      console.log("用户被",i);
+    mdel(i) {
+      console.log("用户被", i);
       this.setPage();
     },
     //删除时，获取最新页码
@@ -99,24 +102,21 @@ export default {
     },
     getCount() {
       //获取用户总数 用于计算分页
-      this.$axios({
-        url: "/api/usercount"
-      }).then(res => {
+      this.$http.get("/api/usercount").then(res => {
         this.total = res.data.list[0].total;
       });
     },
     getPage() {
       //获取用户数据 分页  page 当前页码  size每页显示几条
-      this.$axios({
-        url: "/api/userlist",
-        params: { page: this.nowpage, size: this.pagesize }
-      }).then(res => {
-        this.$message({
-          type: "success",
-          message: "最新数据获取成功"
+      this.$http
+        .get("/api/userlist", { page: this.nowpage, size: this.pagesize })
+        .then(res => {
+          this.$message({
+            type: "success",
+            message: "最新数据获取成功"
+          });
+          this.users = res.data.list;
         });
-        this.users = res.data.list;
-      });
     },
     edit(id) {
       // console.log(id);
@@ -125,48 +125,48 @@ export default {
       // this.$router.push({name:'userinfomid',params:{uid:id}});
       // 方式二 拼接
       this.$router.push("/user/" + id);
-    },
-    del(id) {
-      console.log(id);
-      this.$confirm("此操作将永久删除该菜单, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          //确定
-          this.$axios({
-            url: "/api/userdelete", //请求地址
-            method: "post", //请求方式 默认get
-            data: { id: id } //可以简写 data{id}
-          }).then(res => {
-            if (res.data.code === 200) {
-              // 采用方式二 实现页面更新
-              // this.$bus.$emit('upUser','delUser');
-
-              this.setPage(), //获取最新页码 并 渲染的效果
-
-              this.$message({
-                type: "success",
-                message: "删除成功!"
-              });
-            } else {
-              //删除失败
-              this.$message({
-                type: "error",
-                message: res.data.msg
-              });
-            }
-          });
-        })
-        .catch(() => {
-          //取消
-          this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
     }
+    // del(id) {
+    //   console.log(id);
+    //   this.$confirm("此操作将永久删除该菜单, 是否继续?", "提示", {
+    //     confirmButtonText: "确定",
+    //     cancelButtonText: "取消",
+    //     type: "warning"
+    //   })
+    //     .then(() => {
+    //       //确定
+    //       this.$axios({
+    //         url: "/api/userdelete", //请求地址
+    //         method: "post", //请求方式 默认get
+    //         data: { id: id } //可以简写 data{id}
+    //       }).then(res => {
+    //         if (res.data.code === 200) {
+    //           // 采用方式二 实现页面更新
+    //           // this.$bus.$emit('upUser','delUser');
+
+    //           this.setPage(), //获取最新页码 并 渲染的效果
+
+    //           this.$message({
+    //             type: "success",
+    //             message: "删除成功!"
+    //           });
+    //         } else {
+    //           //删除失败
+    //           this.$message({
+    //             type: "error",
+    //             message: res.data.msg
+    //           });
+    //         }
+    //       });
+    //     })
+    //     .catch(() => {
+    //       //取消
+    //       this.$message({
+    //         type: "info",
+    //         message: "已取消删除"
+    //       });
+    //     });
+    // }
   }
 };
 </script>

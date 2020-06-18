@@ -23,6 +23,11 @@ Vue.prototype.$bus = new Vue();
 import axios from 'axios'
 Vue.prototype.$axios = axios
 
+// 引入网络请求封装
+import http from './common/js/http'
+Vue.prototype.$http = http
+
+
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

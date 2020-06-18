@@ -10,7 +10,7 @@
         <h3>小豪后台管理系统</h3>
         <div>
           <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
-          <span>{{ username }} 用户</span>
+          <span>{{ user.username }} 用户</span>
           <el-button type="danger" slot="reference" icon="el-icon-s-custom" round @click="quit">退出</el-button>
         </div>
       </div>
@@ -32,13 +32,19 @@ export default {
   data() {
     return {
       loading: true,
-      username:'admin',
+      user: {
+        username: ""
+      }
     };
   },
   components: {
     vNav
   },
   methods: {
+    // 获取
+    getSession(data) {
+      return JSON.parse(sessionStorage.getItem("data"));
+    },
     //退出登录
     quit() {
       this.$confirm("此操作将退出后台管理系统, 是否继续?", "提示", {
@@ -67,10 +73,6 @@ export default {
     }
   },
   mounted() {
-    //设置用户名
-    let userinfo = JSON.parse(sessionStorage.getItem("userinfo"));
-    this.username = userinfo.username;
-
     //加载效果
     setTimeout(() => {
       this.loading = false;
@@ -80,16 +82,82 @@ export default {
     // console.log(this.$route.path)
     // axios.get("/dyh/su?cb=&wd=北京").then(res=>{
     //   console.log(res,'dyh跨域请求测试')
-    // })
+    // });
+    //设置用户名
+    let userinfo = sessionStorage.getItem("userinfo")
+      ? JSON.parse(sessionStorage.getItem("userinfo"))
+      : { username: "未登录" };
+    this.user = userinfo;
+    // console.log(this.user);
   },
-  //组件守卫 访问时
-  beforeRouteEnter(to, from, next) {
-    // console.log(to,from,next)
+  //组件守卫 访问时 放到全局守卫里实现
+  // beforeRouteEnter(to, from, next) {
+  //   // console.log(to,from,next)
+  //   let userinfo = JSON.parse(sessionStorage.getItem("userinfo"));
+  //   if (userinfo) {
+  //     //根据用户权限，对用户访问路由验证是否合法
+  //     // 追加首页路由权限
+  //     userinfo.menus_url.push("/");
+  //     userinfo.menus_url.push("/home");
+  //     // 允许访问路由地址
+  //     let menuarr = userinfo.menus_url;
+  //     let res = menuarr.find(item => {
+  //       // 判断用户访问的路由在数组中是否存在
+  //       return item == to.path;
+  //     });
+  //     if (res) {
+  //       next();
+  //     } else {
+  //       alert("非法访问");
+  //       next("/");
+  //     }
+  //   } else {
+  //     next("/login"); //跳转登录
+  //   }
+  // },
+  // bug 添加页的路由需要处理
+  beforeRouteUpdate(to, from, next) {
     let userinfo = JSON.parse(sessionStorage.getItem("userinfo"));
     if (userinfo) {
-      next();
+      //根据用户权限，对用户访问路由验证是否合法
+      // 追加首页路由权限
+      userinfo.menus_url.push("/");
+      userinfo.menus_url.push("/home");
+      // userinfo.menus_url.push("/menu/info");
+      // 允许访问路由地址
+      let menuarr = userinfo.menus_url;
+      //处理添加的路由规则 只匹配第一级路由即可
+      let nowpatharr = to.path.split("/"); // 匹配父级路由即可
+      let nowpath = "/" + nowpatharr[1];
+      let res = menuarr.find(item => {
+        // 判断用户访问的路由在数组中是否存在
+        return item == nowpath;
+      });
+      if (res) {
+        next();
+      } else {
+        this.loading = true;
+        setTimeout(() => {
+          this.loading = false;
+          this.$notify({
+            title: "警告",
+            message: "访问非法路由路径！！！",
+            type: "warning"
+          });
+          next("/");
+        }, 800);
+      }
     } else {
-      next("/login"); //跳转登录
+      this.loading = true;
+      setTimeout(() => {
+        this.loading = false;
+        this.$notify({
+          title: "失败",
+          message: "用户登录状态丢失！退出登录中",
+          type: "warning"
+        });
+        next("/login"); //跳转登录
+      }, 1000);
     }
   }
 };

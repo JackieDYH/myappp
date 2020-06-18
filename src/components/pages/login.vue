@@ -58,11 +58,22 @@ export default {
       }
     };
   },
+  // 钩子函数
+  created() {
+    // let that = this;
+    document.onkeypress = (e)=>{
+      var keycode = document.all ? event.keyCode : e.which;
+      if (keycode == 13) {
+        this.submitForm('ruleForm');// 登录方法名
+         return false;
+      }
+    };
+  },
   mounted() {},
   methods: {
-    session() {
+    setSession(data) {
       //本地临时存储
-      sessionStorage.setItem("userinfo", JSON.stringify(this.ruleForm));
+      sessionStorage.setItem("userinfo", JSON.stringify(data));
     },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
@@ -81,7 +92,8 @@ export default {
                   message: "登录成功",
                   type: "success"
                 });
-                this.session();
+                // console.log(res.data)
+                this.setSession(res.data.list);
                 this.$router.push("/");
               }, 900);
               console.log(res);
@@ -115,6 +127,7 @@ export default {
 <style scoped>
 .box {
   background-color: rgba(87, 112, 133, 0.205);
+  background: -webkit-linear-gradient(left,#88ada6,#d6ecf0);
 }
 h1 {
   text-align: center;
