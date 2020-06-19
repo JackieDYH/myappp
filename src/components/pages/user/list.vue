@@ -16,9 +16,9 @@
       element-loading-background="rgba(0, 0, 0, 0.6)"
     >
       <el-table-column label="序号" width="80">
-        <template slot-scope="item">{{item.$index}}</template>
+        <template slot-scope="item">{{item.$index+1}}</template>
       </el-table-column>
-      <el-table-column prop="uid" label="UID"></el-table-column>
+      <el-table-column prop="uid" label="用户UID" width="380"></el-table-column>
       <el-table-column prop="username" label="用户名"></el-table-column>
       <el-table-column prop="rolename" label="所属角色"></el-table-column>
       <el-table-column label="状态" width="150">
@@ -31,7 +31,7 @@
         <template slot-scope="scope">
           <el-button size="mini" type="primary" @click="edit(scope.row.uid)">编辑</el-button>
           <!-- <el-button size="mini" type="danger" @click="del(scope.row.id)">删除</el-button> -->
-          <v-del :id="scope.row.id" url="/api/userdelete" @mdel="mdel"></v-del>
+          <v-del :id="scope.row.id" url="/api/userdelete" txt="用户信息" @mdel="mdel"></v-del>
         </template>
       </el-table-column>
     </el-table>
@@ -78,8 +78,8 @@ export default {
       this.loading = false;
     }, 600);
 
-    this.getCount();
     this.getPage();
+    this.getCount();
   },
   methods: {
     //删除
@@ -111,11 +111,24 @@ export default {
       this.$http
         .get("/api/userlist", { page: this.nowpage, size: this.pagesize })
         .then(res => {
-          this.$message({
-            type: "success",
-            message: "最新数据获取成功"
-          });
-          this.users = res.data.list;
+          if (res.data.code == 200) {
+            this.$message({
+              type: "success",
+              message: "最新数据获取成功"
+            });
+            this.users = res.data.list;
+          } else {
+            this.loading = true;
+            setTimeout(() => {
+              this.loading = false;
+              this.$notify({
+                title: "失败",
+                message: res.data.msg,
+                type: "warning"
+              });
+              this.$router.push("/login");
+            }, 1000);
+          }
         });
     },
     edit(id) {

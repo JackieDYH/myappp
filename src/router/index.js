@@ -107,6 +107,42 @@ let router = new Router({
           component: () => import('@/components/pages/category/info')
         },
         {
+          path: 'specs',
+          meta: { select: '/specs' },
+          name: 'specs',
+          component: () => import('@/components/pages/specs/list')
+        },
+        {
+          path: 'specs/info',
+          meta: { select: '/specs' },
+          name: 'specsinfo',
+          component: () => import('@/components/pages/specs/info')
+        },
+        {
+          path: 'specs/:uid',
+          meta: { select: '/specs' },
+          name: 'specsinfomid',
+          component: () => import('@/components/pages/specs/info')
+        },
+        {
+          path: 'goods',
+          meta: { select: '/goods' },
+          name: 'goods',
+          component: () => import('@/components/pages/goods/list')
+        },
+        {
+          path: 'goods/info',
+          meta: { select: '/goods' },
+          name: 'goodsinfo',
+          component: () => import('@/components/pages/goods/info')
+        },
+        {
+          path: 'goods/:uid',
+          meta: { select: '/goods' },
+          name: 'goodsinfomid',
+          component: () => import('@/components/pages/goods/info')
+        },
+        {
           path: '',
           redirect: '/home'
         }

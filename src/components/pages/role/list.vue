@@ -16,9 +16,9 @@
       element-loading-background="rgba(0, 0, 0, 0.6)"
     >
       <el-table-column label="序号" width="80">
-        <template slot-scope="item">{{item.$index}}</template>
+        <template slot-scope="item">{{item.$index+1}}</template>
       </el-table-column>
-      <el-table-column prop="id" label="角色编号"></el-table-column>
+      <el-table-column prop="id" label="角色ID"></el-table-column>
       <el-table-column prop="rolename" label="角色名称"></el-table-column>
       <el-table-column label="状态" width="180">
         <template slot-scope="item">
@@ -31,7 +31,7 @@
           <el-button size="mini" type="primary" @click="edit(scope.row.id)">编辑</el-button>
           <!-- <el-button size="mini" type="danger" @click="del(scope.row.id)">删除</el-button> -->
           <!-- 使用公用组件 -->
-          <v-del :id="scope.row.id" url="/api/roledelete" @mdel="mdel"></v-del>
+          <v-del :id="scope.row.id" url="/api/roledelete" txt="角色信息" @mdel="mdel"></v-del>
         </template>
       </el-table-column>
     </el-table>
@@ -67,12 +67,24 @@ export default {
     //获取角色列表
     getRole() {
       this.$http.get("/api/rolelist").then(res => {
-        this.$message({
-          type: "success",
-          message: "最新数据获取成功"
-        });
-        this.roles = res.data.list;
-        // console.log(this.roles)
+        if (res.data.code == 200) {
+          this.$message({
+            type: "success",
+            message: "最新数据获取成功"
+          });
+          this.roles = res.data.list;
+        } else {
+          this.loading = true;
+          setTimeout(() => {
+            this.loading = false;
+            this.$notify({
+              title: "失败",
+              message: res.data.msg,
+              type: "warning"
+            });
+            this.$router.push("/login");
+          }, 1000);
+        }
       });
     },
 

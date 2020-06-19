@@ -29,8 +29,8 @@
         prop 绑定数据
       -->
       <el-table-column prop label="层级" width="50"></el-table-column>
-      <el-table-column label="序号" width="80">
-        <template slot-scope="item">{{item.$index}}</template>
+      <el-table-column prop="id" label="菜单ID" width="100">
+        <!-- <template slot-scope="item">{{item.$index}}</template> -->
       </el-table-column>
       <el-table-column prop="title" label="菜单名称"></el-table-column>
       <!-- <el-table-column prop="pid" label="上级菜单"></el-table-column> -->
@@ -51,7 +51,7 @@
         <template slot-scope="scope">
           <el-button size="mini" type="primary" @click="edit(scope.row.id)">编辑</el-button>
           <!-- <el-button size="mini" type="danger" @click="del(scope.row.id)">删除</el-button> -->
-          <v-del :id="scope.row.id" url="/api/menudelete" @mdel="mdel"></v-del>
+          <v-del :id="scope.row.id" url="/api/menudelete" txt="菜单信息" @mdel="mdel"></v-del>
         </template>
       </el-table-column>
     </el-table>
@@ -97,12 +97,24 @@ export default {
       //   params: { istree: 1 }
       // })
       this.$http.get("/api/menulist", { istree: 1 }).then(res => {
-        this.$message({
-          type: "success",
-          message: "最新数据获取成功"
-        });
-        // console.log(res.data.list,111)
-        this.menus = res.data.list;
+        if (res.data.code == 200) {
+          this.$message({
+            type: "success",
+            message: "最新数据获取成功"
+          });
+          this.menus = res.data.list;
+        } else {
+          this.loading = true;
+          setTimeout(() => {
+            this.loading = false;
+            this.$notify({
+              title: "失败",
+              message: res.data.msg,
+              type: "warning"
+            });
+            this.$router.push("/login");
+          }, 1000);
+        }
       });
     },
     edit(id) {

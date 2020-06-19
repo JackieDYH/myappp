@@ -61,11 +61,11 @@ export default {
   // 钩子函数
   created() {
     // let that = this;
-    document.onkeypress = (e)=>{
+    document.onkeypress = e => {
       var keycode = document.all ? event.keyCode : e.which;
       if (keycode == 13) {
-        this.submitForm('ruleForm');// 登录方法名
-         return false;
+        this.submitForm("ruleForm"); // 登录方法名
+        return false;
       }
     };
   },
@@ -84,19 +84,32 @@ export default {
             data: this.ruleForm
           }).then(res => {
             if (res.data.code == 200) {
-              this.loading = true;
-              setTimeout(() => {
-                this.loading = false;
-                this.$notify({
-                  title: "成功",
-                  message: "登录成功",
-                  type: "success"
-                });
-                // console.log(res.data)
-                this.setSession(res.data.list);
-                this.$router.push("/");
-              }, 900);
-              console.log(res);
+              // 判断用户状态是否被禁用 1 启用 2 禁用
+              if (res.data.list.status == 1) {
+                this.loading = true;
+                setTimeout(() => {
+                  this.loading = false;
+                  this.$notify({
+                    title: "成功",
+                    message: "登录成功",
+                    type: "success"
+                  });
+                  // console.log(res.data)
+                  this.setSession(res.data.list);
+                  this.$router.push("/");
+                }, 900);
+              } else {
+                console.log(res);
+                this.loading = true;
+                setTimeout(() => {
+                  this.loading = false;
+                  this.$notify({
+                    title: "失败",
+                    message: `当前${this.ruleForm.username}用户已被禁用，请联系管理员`,
+                    type: "warning"
+                  });
+                }, 800);
+              }
             } else {
               this.loading = true;
               setTimeout(() => {
@@ -127,7 +140,7 @@ export default {
 <style scoped>
 .box {
   background-color: rgba(87, 112, 133, 0.205);
-  background: -webkit-linear-gradient(left,#88ada6,#d6ecf0);
+  background: -webkit-linear-gradient(left, #88ada6, #d6ecf0);
 }
 h1 {
   text-align: center;

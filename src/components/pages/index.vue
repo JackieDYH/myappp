@@ -115,7 +115,14 @@ export default {
   //     next("/login"); //跳转登录
   //   }
   // },
-  // bug 添加页的路由需要处理
+  //   beforeRouteLeave(to, from, next){
+  //   if (confirm("你确定要离开吗") == true) {
+  //     next();
+  //   } else {
+  //     next(false);
+  //   }
+  // },
+  // bug 添加页的路由需要处理 已经修复
   beforeRouteUpdate(to, from, next) {
     let userinfo = JSON.parse(sessionStorage.getItem("userinfo"));
     if (userinfo) {
@@ -176,6 +183,10 @@ export default {
 }
 .el-header .head > div > span {
   vertical-align: middle;
+}
+
+.el-main{
+  height: 630px;
 }
 
 .el-footer {
