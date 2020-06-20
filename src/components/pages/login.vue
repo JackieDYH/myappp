@@ -142,6 +142,9 @@ export default {
   background-color: rgba(87, 112, 133, 0.205);
   background: -webkit-linear-gradient(left, #88ada6, #d6ecf0);
 }
+.el-form{
+  margin-right: 50px;
+}
 h1 {
   text-align: center;
   padding: 20px 0px;

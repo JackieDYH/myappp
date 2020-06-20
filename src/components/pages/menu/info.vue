@@ -3,8 +3,8 @@
     <!-- 面包屑导航 -->
     <el-breadcrumb separator="/">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/menu' }">菜单管理</el-breadcrumb-item>
-      <el-breadcrumb-item>菜单{{ tip }}</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/menu' }">用户管理</el-breadcrumb-item>
+      <el-breadcrumb-item>用户{{ tip }}</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 
       rules 表单验证规则
@@ -103,8 +103,9 @@ export default {
     //   url: "/api/menulist", //菜单列表
     //   params: { istree: 1 }
     // })
-    this.$axios("/api/menulist", { istree: 1 }).then(res => {
+    this.$http.get("/api/menulist", { istree: 1 }).then(res => {
       this.pidmenu = res.data.list; //动态设置上级菜单下拉列表
+      console.log(this.pidmenu,2222)
     });
   },
   methods: {

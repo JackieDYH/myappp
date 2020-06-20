@@ -22,10 +22,16 @@
         <el-input v-model.trim="info.specsname" autocomplete="off"></el-input>
       </el-form-item>
       <!-- 根据属性值动态添加 -->
-      <el-form-item v-for="(item, index) in specsAttrs" :label="'规格属性' + index" :key="item.index">
+      <el-form-item
+        v-for="(item, index) in info.attrs"
+        :label="'规格属性' + (index+1)"
+        :key="item.index"
+        :prop="'attrs.' + index + '.value'"
+        :rules="{required: true, message: '属性不能为空', trigger: 'blur'}"
+      >
         <div style="display: flex;">
           <el-input v-model="item.value" autocomplete="off"></el-input>
-          <el-button
+          <!-- <el-button
             style="margin-left:6px"
             type="primary"
             icon="el-icon-plus"
@@ -33,14 +39,13 @@
             @click.prevent="add()"
             v-if="index==0"
             :disabled="tf"
-          ></el-button>
+          ></el-button>-->
           <el-button
             style="margin-left:6px"
             type="danger"
             icon="el-icon-delete"
             circle
             @click.prevent="remove(index)"
-            v-else
           ></el-button>
         </div>
       </el-form-item>
@@ -50,6 +55,8 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">{{ tip }}</el-button>
+        <el-button type="success" plain :disabled="tf" @click="add">添加属性</el-button>
+        <el-button type="warning" plain @click="reset">重置</el-button>
         <el-button @click="resetForm('ruleForm')">取消</el-button>
       </el-form-item>
     </el-form>
@@ -65,9 +72,10 @@ export default {
       loading: false,
       info: {
         specsname: "", //分类名
-        status: true //状态
+        status: true, //状态
+        attrs: [{ value: "" }]
       },
-      specsAttrs: [{ value: "" }],
+      // specsAttrs: [{ value: "" }],
       cates: [], //分类列表
       rules: {
         specsname: [
@@ -92,34 +100,50 @@ export default {
         // 匹配数据类型
         this.info.status = this.info.status == 1 ? true : false;
         // 规格属性格式处理
+        let attrs = [{ value: "" }];
         this.info.attrs.map((item, id) => {
           if (id == 0) {
-            this.specsAttrs[0].value = item;
+            attrs[0].value = item;
           } else {
-            this.specsAttrs.push({ value: item });
+            attrs.push({ value: item });
           }
         });
+        // console.log(attrs,3333333333);return;
+        this.info.attrs = attrs;
+        this.setDisabled();
       });
     }
   },
   methods: {
-    //添加,key: Date.now()
-    add() {
-      this.specsAttrs.push({ value: "" });
-      if (this.specsAttrs.length >= 5) {
+    //设置添加按钮
+    setDisabled() {
+      if (this.info.attrs.length >= 5) {
         this.$notify({
-          title: "失败",
+          title: "警告",
           message: "最多可以添加 5 条属性！",
-          type: "error"
+          type: "warning"
         });
         this.tf = true;
       }
     },
+    //添加,key: Date.now()
+    add() {
+      this.info.attrs.push({ value: "" });
+        this.setDisabled();
+    },
     remove(i) {
-      this.specsAttrs.splice(i, 1);
-      if (this.specsAttrs.length < 5) {
+      this.info.attrs.splice(i, 1);
+      if (this.info.attrs.length < 5) {
         this.tf = false;
       }
+    },
+    reset() {
+      this.info = {
+        specsname: "",
+        status: true,
+        attrs: [{ value: "" }]
+      }
+      this.tf = false;
     },
     submitForm(formName) {
       // console.log(this);
@@ -138,12 +162,12 @@ export default {
           }
           // 处理 status字段 将布尔值 转换 true 1 , false 2
           data.status = data.status ? 1 : 2;
-          //console.log(data,this.specsAttrs);return;
           let arr = [];
-          this.specsAttrs.map(item => {
+          data.attrs.map(item => {
             arr.push(item.value);
           });
           data.attrs = arr ? arr.join(",") : ""; //处理成数据库需要的字符串
+          // console.log(data);return;
           //发起post请求，提交表单form数据 请求接口项目中的菜单添加接口，完成数据的保存
           this.$http.post(url, data).then(res => {
             console.log(res);

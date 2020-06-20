@@ -143,6 +143,60 @@ let router = new Router({
           component: () => import('@/components/pages/goods/info')
         },
         {
+          path: 'banner',
+          meta: { select: '/banner' },
+          name: 'banner',
+          component: () => import('@/components/pages/banner/list')
+        },
+        {
+          path: 'banner/info',
+          meta: { select: '/banner' },
+          name: 'bannerinfo',
+          component: () => import('@/components/pages/banner/info')
+        },
+        {
+          path: 'banner/:uid',
+          meta: { select: '/banner' },
+          name: 'bannerinfomid',
+          component: () => import('@/components/pages/banner/info')
+        },
+        {
+          path: 'member',
+          meta: { select: '/member' },
+          name: 'member',
+          component: () => import('@/components/pages/member/list')
+        },
+        {
+          path: 'member/info',
+          meta: { select: '/member' },
+          name: 'memberinfo',
+          component: () => import('@/components/pages/member/info')
+        },
+        {
+          path: 'member/:uid',
+          meta: { select: '/member' },
+          name: 'memberinfomid',
+          component: () => import('@/components/pages/member/info')
+        },
+        {
+          path: 'seck',
+          meta: { select: '/seck' },
+          name: 'seck',
+          component: () => import('@/components/pages/seck/list')
+        },
+        {
+          path: 'seck/info',
+          meta: { select: '/seck' },
+          name: 'seckinfo',
+          component: () => import('@/components/pages/seck/info')
+        },
+        {
+          path: 'seck/:uid',
+          meta: { select: '/seck' },
+          name: 'seckinfomid',
+          component: () => import('@/components/pages/seck/info')
+        },
+        {
           path: '',
           redirect: '/home'
         }

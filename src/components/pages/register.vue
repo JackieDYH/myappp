@@ -100,6 +100,9 @@ h1{
   text-align: center;
   padding-bottom: 15px;
 }
+.el-form{
+  margin-right: 50px;
+}
 .login {
   width: 420px;
   margin: 0 auto;

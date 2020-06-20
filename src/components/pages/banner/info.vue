@@ -3,8 +3,8 @@
     <!-- 面包屑导航 -->
     <el-breadcrumb separator="/">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/category' }">商品分类</el-breadcrumb-item>
-      <el-breadcrumb-item>商品{{ tip }}</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/banner' }">轮播图管理</el-breadcrumb-item>
+      <el-breadcrumb-item>轮播图{{ tip }}</el-breadcrumb-item>
     </el-breadcrumb>
     <el-form
       :model="info"
@@ -18,25 +18,10 @@
       element-loading-spinner="el-icon-loading"
       element-loading-background="rgba(0, 0, 0, 0.6)"
     >
-      <el-form-item label="上级分类" prop="pid">
-        <el-select v-model="info.pid" placeholder="请选择">
-          <el-option label="顶级分类" :value="0"></el-option>
-          <el-option v-for="item of cates" :key="item.id" :label="item.catename" :value="item.id"></el-option>
-        </el-select>
+      <el-form-item label="轮播图名称" prop="title">
+        <el-input v-model.trim="info.title" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="分类名称" prop="catename">
-        <el-input v-model.trim="info.catename" autocomplete="off"></el-input>
-      </el-form-item>
-      <el-form-item label="商品图片" prop="img">
-        <!-- 
-          上传图片
-          action 上传服务器地址
-          list-type 文件列表类型
-          on-preview 图片预览执行函数
-          on-remove 图片删除时执行
-          auto-upload 是否自动上传
-          on-change 文件选后或上传完成后或失败后 执行函数
-        -->
+      <el-form-item label="轮播图片" prop="img">
         <el-upload
           action="#"
           list-type="picture-card"
@@ -73,18 +58,15 @@ export default {
       tip: "添加",
       loading: false,
       info: {
-        pid: "", //pid
-        catename: "", //分类名
+        title: "", //轮播图
         status: true //状态
       },
       img: "", //图片
-      cates: [], //分类列表
       rules: {
-        catename: [
+        title: [
           { required: true, message: "分类名称不能为空！", trigger: "blur" },
           { min: 1, max: 16, message: "请输入1到16个汉字", trigger: "blur" }
         ],
-        pid: [{ required: true, message: "请选择上级分类", trigger: "blur" }],
         // img: [{ required: true, message: "请上传商品图片", trigger: "blur" }]
       }
     };
@@ -97,7 +79,7 @@ export default {
     if (uid) {
       this.tip = "修改";
       // 获取路由传递过来的uid获取对应的菜单数据
-      this.$http.get("/api/cateinfo", { id: uid }).then(res => {
+      this.$http.get("/api/bannerinfo", { id: uid }).then(res => {
         console.log(res);
         this.info = res.data.list;
         // 匹配数据类型
@@ -105,10 +87,7 @@ export default {
         this.fileList = this.info.img ? [{url:this.info.img}] : [];//显示图片
       });
     }
-    //获取角色列表 , { istree: 1 }
-    this.$http.get("/api/catelist", { istree: 1 }).then(res => {
-      this.cates = res.data.list; //动态设置上级菜单下拉列表
-    });
+    
   },
   methods: {
     // 预览触发
@@ -130,10 +109,10 @@ export default {
           let data = JSON.parse(JSON.stringify(this.info));
           // let data = this.info; //将文件类型数据提处理单独处理
           //如果现在访问的是动态路由，则执行修改操作，否则执行添加操作
-          let url = "/api/cateadd";
+          let url = "/api/banneradd";
           const uid = this.$route.params.uid;
           if (uid) {
-            url = "/api/cateedit";
+            url = "/api/banneredit";
             data.id = uid; //添加修改时提交的必要条件 菜单id
           }
           // 处理 status字段 将布尔值 转换 true 1 , false 2
@@ -154,17 +133,14 @@ export default {
             // 加载效果
             this.loading = true;
             if (res.data.code == 200) {
-              // 采用方式二 实现页面更新
-              // this.$bus.$emit('upMenu','updateMenu');
               this.$notify({
                 title: "成功",
-                message: `管理员已经${this.tip}成功!`,
+                message: `轮播图${this.tip}成功!`,
                 type: "success"
               });
               setTimeout(() => {
                 this.loading = false;
-                this.$router.push("/category");
-                // this.$forceUpdate();
+                this.$router.push("/banner");
               }, 600);
             } else {
               setTimeout(() => {
@@ -182,8 +158,7 @@ export default {
     },
     //取消
     resetForm(formName) {
-      this.$router.push("/category");
-      // this.$refs[formName].resetFields();
+      this.$router.push("/banner");
     }
   }
 };
