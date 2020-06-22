@@ -47,7 +47,23 @@
         <el-input v-model.trim="info.title" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item label="秒杀时间" required>
-        <el-col :span="11" prop="begintime">
+        <!-- 
+          value-format 绑定值的格式
+          format	显示在输入框中的格式
+          format="yyyy-MM-dd HH:mm:ss"
+          value-format="timestamp" 时间戳
+         -->
+        <el-date-picker
+          v-model="time"
+          type="datetimerange"
+          format="yyyy-MM-dd HH:mm:ss"
+          value-format="timestamp"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :default-time="['00:00:00','23:59:59']"
+        ></el-date-picker>
+        <!-- <el-col :span="11" prop="begintime">
           <el-form-item prop="begintime">
             <el-time-picker
               format="yyyy-MM-dd HH:mm:ss"
@@ -71,7 +87,7 @@
               style="width: 100%;"
             ></el-time-picker>
           </el-form-item>
-        </el-col>
+        </el-col>-->
       </el-form-item>
       <el-form-item label="状态" prop="status">
         <el-switch v-model="info.status"></el-switch>
@@ -86,18 +102,19 @@
 
 <script>
 export default {
-  // new Date(this.ruleForm.startTime).getTime() 
+  // new Date(this.ruleForm.startTime).getTime()
   data() {
     return {
       tip: "添加",
       loading: false,
+      time:[],
       info: {
         title: "", //限时秒杀名称
-        begintime: "", //开始时间
-        endtime: "", //结束时间
-        first_cateid:"", //商品一级分类编号
-        second_cateid:"", //商品二级分类编号
-        goodsid:"", //商品编号
+        begintime: '', //开始时间
+        endtime: '', //结束时间
+        first_cateid: "", //商品一级分类编号
+        second_cateid: "", //商品二级分类编号
+        goodsid: "", //商品编号
         status: true //状态
       },
       firstcates: [], //一级分类列表
@@ -128,7 +145,7 @@ export default {
       // 获取路由传递过来的uid获取对应的菜单数据
       this.$http.get("/api/seckinfo", { id: uid }).then(res => {
         this.info = res.data.list;
-        // console.log(this.info,11111111111111);return;
+        // console.log(this.info,this.time,11111111111111);return;
         // 一级分类 获取二级
         let first = this.info.first_cateid;
         let second = this.info.second_cateid;
@@ -137,7 +154,9 @@ export default {
         this.secondChange(second, goodsid);
         // 匹配数据类型
         this.info.status = this.info.status == 1 ? true : false;
-        console.log(this.info,22222222222222)
+        // 时间戳
+        this.time.push(this.info.begintime);
+        this.time.push(this.info.endtime);
       });
     }
     //获取一级分类列表 , { istree: 1 }
@@ -145,7 +164,7 @@ export default {
   },
   methods: {
     // 一级分类事件
-    firstChange(i,t) {
+    firstChange(i, t) {
       //清空二级内容
       this.info.second_cateid = t ? t : "";
       this.info.goodsid = t ? t : "";
@@ -155,12 +174,12 @@ export default {
       });
     },
     // 二级分类事件
-    secondChange(s,t) {
+    secondChange(s, t) {
       this.info.goodsid = t ? t : "";
-      this.$http.get("/api/goodslist",{sid:s}).then(res=>{
-        console.log(res,111)
+      this.$http.get("/api/goodslist", { sid: s }).then(res => {
+        console.log(res, 111);
         this.goods = res.data.list;
-      })
+      });
     },
     // 获取信息
     getfirst() {
@@ -186,8 +205,11 @@ export default {
           }
           // 处理 status字段 将布尔值 转换 true 1 , false 2
           data.status = data.status ? 1 : 2;
-          // console.log(data);return;
-          
+          // 转换成时间戳存储
+          data.begintime = new Date(this.time[0]).getTime();
+          data.endtime = new Date(this.time[1]).getTime();
+          // console.log(this.time[0],this.time[1],data);return;
+
           //发起post请求，提交表单form数据 请求接口项目中的菜单添加接口，完成数据的保存
           this.$http.post(url, data).then(res => {
             console.log(res);

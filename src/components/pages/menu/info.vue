@@ -91,8 +91,9 @@ export default {
       //   url: "/api/menuinfo",
       //   params: { id: mid }
       // })
-      this.$http.get("/api/menuinfo",{ id: mid }).then(res => {
-        console.log(res);
+      // /api/menuinfo
+      this.$http.get(this.$api.menuinfo,{ id: mid }).then(res => {
+        // console.log(res);
         this.menus = res.data.list;
         // 匹配数据类型
         this.menus.status = this.menus.status == 1 ? true : false;
@@ -103,9 +104,10 @@ export default {
     //   url: "/api/menulist", //菜单列表
     //   params: { istree: 1 }
     // })
-    this.$http.get("/api/menulist", { istree: 1 }).then(res => {
+    // "/api/menulist"
+    this.$http.get(this.$api.menulist, { istree: 1 }).then(res => {
       this.pidmenu = res.data.list; //动态设置上级菜单下拉列表
-      console.log(this.pidmenu,2222)
+      // console.log(this.pidmenu,2222)
     });
   },
   methods: {
@@ -117,10 +119,10 @@ export default {
           //获取一下表单中的数据，用JSON序列化一下，防止数据变化后页面跟着变化
           let data = JSON.parse(JSON.stringify(this.menus));
           //如果现在访问的是动态路由，则执行修改操作，否则执行添加操作
-          let url = "/api/menuadd";
+          let url = this.$api.menuadd;
           const mid = this.$route.params.mid;
           if (mid) {
-            url = "/api/menuedit";
+            url = this.$api.menuedit;
             data.id = mid; //添加修改时提交的必要条件 菜单id
           }
           // 处理 status字段 将布尔值 转换 true 1 , false 2

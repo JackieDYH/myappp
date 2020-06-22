@@ -51,7 +51,7 @@
         <template slot-scope="scope">
           <el-button size="mini" type="primary" @click="edit(scope.row.id)">编辑</el-button>
           <!-- <el-button size="mini" type="danger" @click="del(scope.row.id)">删除</el-button> -->
-          <v-del :id="scope.row.id" url="/api/menudelete" txt="菜单信息" @mdel="mdel"></v-del>
+          <v-del :id="scope.row.id" :url="menudelete" txt="菜单信息" @mdel="mdel"></v-del>
         </template>
       </el-table-column>
     </el-table>
@@ -63,6 +63,7 @@ import vDel from "../../views/del";
 export default {
   data() {
     return {
+      menudelete:this.$api.menudelete,
       menus: [],
       loading: true
     };
@@ -96,7 +97,7 @@ export default {
       //   url: "/api/menulist",
       //   params: { istree: 1 }
       // })
-      this.$http.get("/api/menulist", { istree: 1 }).then(res => {
+      this.$http.get(this.$api.menulist, { istree: 1 }).then(res => {
         if (res.data.code == 200) {
           this.$message({
             type: "success",

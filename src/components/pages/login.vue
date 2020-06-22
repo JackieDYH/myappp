@@ -30,6 +30,8 @@
 </template>
 
 <script>
+// 使用助手函数
+import { mapActions } from 'vuex'
 export default {
   data() {
     var checkuser = (rule, value, callback) => {
@@ -71,15 +73,19 @@ export default {
   },
   mounted() {},
   methods: {
+    // 引入助手函数
+    ...mapActions(['setAdeminUserSync']),
+
+    //本地临时存储
     setSession(data) {
-      //本地临时存储
       sessionStorage.setItem("userinfo", JSON.stringify(data));
     },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.$axios({
-            url: "/api/userlogin",
+            // url: "/api/userlogin",
+            url: this.$api.userlogin,
             method: "post",
             data: this.ruleForm
           }).then(res => {
@@ -95,7 +101,10 @@ export default {
                     type: "success"
                   });
                   // console.log(res.data)
-                  this.setSession(res.data.list);
+                  //本地存储方式
+                  // this.setSession(res.data.list);
+                  // vuex存储方式
+                  this.setAdeminUserSync(res.data.list);
                   this.$router.push("/");
                 }, 900);
               } else {

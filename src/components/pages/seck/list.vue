@@ -51,6 +51,7 @@
 
 <script>
 import vDel from "../../views/del";
+import getTime from '../../../common/js/getTime'
 export default {
   data() {
     return {
@@ -113,6 +114,11 @@ export default {
               message: "最新数据获取成功"
             });
             this.secks = res.data.list;
+            // 处理时间
+            this.secks.map(item=>{
+              item.begintime = getTime.myFormatDate(Number(item.begintime));
+              item.endtime = getTime.myFormatDate(Number(item.endtime));
+            })
           } else {
             this.loading = true;
             setTimeout(() => {

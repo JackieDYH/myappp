@@ -25,7 +25,7 @@
       </el-menu-item>
       <el-submenu
         :index="menu.id.toString()"
-        v-for="menu of menus"
+        v-for="menu of userInfo.menus"
         :key="menu.id"
         :disabled="menu.status == 1 ? false : true"
       >
@@ -64,6 +64,8 @@
 </template>
 
 <script>
+// vuex状态管理
+import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
@@ -71,6 +73,9 @@ export default {
       // defaultActive:'',
       menus: []
     };
+  },
+  computed:{
+    ...mapGetters(['userInfo']),
   },
   methods: {
     getNavlist() {
@@ -82,14 +87,17 @@ export default {
       //   this.menus = res.data.list;
       //   // console.log(res, this.menus);
       // });
-      // 使用用户登录后的菜单 判断用户
-      if(sessionStorage.getItem("userinfo")){
-        let nav = JSON.parse(sessionStorage.getItem("userinfo"));
-        this.menus = nav.menus;
-      }
-    }
+      //1 使用用户登录后的菜单 判断用户
+      // if(sessionStorage.getItem("userinfo")){
+      //   let nav = JSON.parse(sessionStorage.getItem("userinfo"));
+      //   this.menus = nav.menus;
+      // };
+
+      // 2 使用vuex存储
+    },
   },
   mounted() {
+
     //页面加载时，控住左侧菜单选中效果
     //把当前路由中的meta的自定义属性赋值给默认选中变量
     // console.log(this.$route);
@@ -97,13 +105,13 @@ export default {
     // this.defaultActive = this.$route.meta.select;
 
     // 获取菜单列表
-    this.getNavlist();
+    // this.getNavlist();
 
     //方式一动态改变 监听方式  删除时使用
-    this.$bus.$on("upMenu", i => {
-      console.log(i);
-      this.getNavlist();
-    });
+    // this.$bus.$on("upMenu", i => {
+    //   console.log(i);
+    //   this.getNavlist();
+    // });
   },
   watch: {
     // 监听route的地址变化 并改变数据
@@ -113,7 +121,7 @@ export default {
       // this.defaultActive = newVal.meta.select;
 
       //方式二动态改变 监听方式
-      this.getNavlist();
+      // this.getNavlist();
     }
   }
 };

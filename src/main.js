@@ -27,14 +27,18 @@ Vue.prototype.$axios = axios
 import http from './common/js/http'
 Vue.prototype.$http = http
 
+// 引入封装的api接口文件
+import apis from './common/js/apis'
+Vue.prototype.$api = apis
+
 
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  router,
-  store,
+  router,//挂载
+  store,//挂载
   render:h =>h(App)
   // components: { App },
   // template: '<App/>'

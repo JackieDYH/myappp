@@ -210,11 +210,19 @@ let router = new Router({
   // mode:"history",//路由模式 默认hash
 })
 
+// 引入vuex厂库
+import store from '../store'
 // 全局守卫
 router.beforeEach((to, form, next) => {
   // console.log(to,from,next)
-  let userinfo = JSON.parse(sessionStorage.getItem("userinfo"));
-  if (userinfo) {
+  //1 本地存储方式
+  // let userinfo = JSON.parse(sessionStorage.getItem("userinfo"));
+  
+  //2 vuex方式存储厂库
+  let userinfo = store.state.adminUser;
+  console.log(userinfo,'userinfo初始');
+
+  if (userinfo.token) {
     //根据用户权限，对用户访问路由验证是否合法
     // 追加首页路由权限
     userinfo.menus_url.push("/");

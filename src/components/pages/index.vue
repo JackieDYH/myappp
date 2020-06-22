@@ -10,7 +10,7 @@
         <h3>小豪后台管理系统</h3>
         <div>
           <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
-          <span>{{ user.username }} 用户</span>
+          <span>{{ userInfo.username }} 用户</span>
           <el-button type="danger" slot="reference" icon="el-icon-s-custom" round @click="quit">退出</el-button>
         </div>
       </div>
@@ -28,23 +28,26 @@
 
 <script>
 import vNav from "../views/nav";
+// 引入计算
+import { mapGetters,mapActions } from 'vuex'
 export default {
   data() {
     return {
       loading: true,
-      user: {
-        username: ""
-      }
+      // user: {
+      //   username: ""
+      // }
     };
   },
   components: {
     vNav
   },
   methods: {
-    // 获取
-    getSession(data) {
-      return JSON.parse(sessionStorage.getItem("data"));
-    },
+    ...mapActions(['setAdeminUserSync']),
+    // 1获取本地存储方法
+    // getSession(data) {
+    //   return JSON.parse(sessionStorage.getItem("data"));
+    // },
     //退出登录
     quit() {
       this.$confirm("此操作将退出后台管理系统, 是否继续?", "提示", {
@@ -56,7 +59,10 @@ export default {
           this.loading = true;
           setTimeout(() => {
             this.loading = false;
-            sessionStorage.removeItem("userinfo");
+            // sessionStorage.removeItem("userinfo");
+            //2 vuex 退出登录 将值为空对象
+            this.setAdeminUserSync({});
+
             this.$router.push("/login");
           }, 1200);
           this.$message({
@@ -78,18 +84,18 @@ export default {
       this.loading = false;
     }, 800);
     // console.log(this)
-    // console.log(this.$router)
-    // console.log(this.$route.path)
-    // axios.get("/dyh/su?cb=&wd=北京").then(res=>{
-    //   console.log(res,'dyh跨域请求测试')
-    // });
-    //设置用户名
-    let userinfo = sessionStorage.getItem("userinfo")
-      ? JSON.parse(sessionStorage.getItem("userinfo"))
-      : { username: "未登录" };
-    this.user = userinfo;
-    // console.log(this.user);
+
+    //1利用本地存储设置用户名
+    // let userinfo = sessionStorage.getItem("userinfo")
+    //   ? JSON.parse(sessionStorage.getItem("userinfo"))
+    //   : { username: "未登录" };
+    // this.user = userinfo;
   },
+  computed:{//计算属性
+    // 2 利用vuex设置
+    ...mapGetters(['userInfo']),
+  },
+
   //组件守卫 访问时 放到全局守卫里实现
   // beforeRouteEnter(to, from, next) {
   //   // console.log(to,from,next)
@@ -124,7 +130,9 @@ export default {
   // },
   // bug 添加页的路由需要处理 已经修复
   beforeRouteUpdate(to, from, next) {
-    let userinfo = JSON.parse(sessionStorage.getItem("userinfo"));
+    // let userinfo = JSON.parse(sessionStorage.getItem("userinfo"));
+    //2 vuex方式存储厂库
+    let userinfo = this.userInfo;
     if (userinfo) {
       //根据用户权限，对用户访问路由验证是否合法
       // 追加首页路由权限
