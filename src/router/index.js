@@ -247,7 +247,7 @@ router.beforeEach((to, form, next) => {
     if (to.fullPath == '/login' || to.fullPath == '/register') {
       next();
     } else {
-      alert("您还没有登录，请先登录！");
+      // alert("您还没有登录，请先登录！");
       next('/login');
     }
   }

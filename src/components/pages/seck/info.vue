@@ -206,8 +206,11 @@ export default {
           // 处理 status字段 将布尔值 转换 true 1 , false 2
           data.status = data.status ? 1 : 2;
           // 转换成时间戳存储
-          data.begintime = new Date(this.time[0]).getTime();
-          data.endtime = new Date(this.time[1]).getTime();
+          // data.begintime = new Date(this.time[0]).getTime();
+          // data.endtime = new Date(this.time[1]).getTime();
+          // 不需要转换时间戳，组件中直接处理成时间戳了
+          data.begintime = this.time[0];
+          data.endtime = this.time[1];
           // console.log(this.time[0],this.time[1],data);return;
 
           //发起post请求，提交表单form数据 请求接口项目中的菜单添加接口，完成数据的保存
