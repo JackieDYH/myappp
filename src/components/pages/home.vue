@@ -4,8 +4,10 @@
     element-loading-text="拼命加载中"
     element-loading-spinner="el-icon-loading"
     element-loading-background="rgba(0, 0, 0, 0.6)"
+    class="echa"
   >
-    <div id="main" style="width: 600px;height:400px;"></div>
+    <div id="main" style="width: 700px;height:450px;"></div>
+    <div id="admin" style="width: 450px;height:450px;"></div>
   </div>
 </template>
 
@@ -16,8 +18,10 @@ export default {
   data() {
     return {
       loading: true,
-      orderData:[5, 20, 16, 20, 8, 30],
-      charts: "",
+      orderTitle: [],
+      orderData: [],
+      usergroup: [],
+      charts: ""
     };
   },
   mounted() {
@@ -25,32 +29,112 @@ export default {
     setTimeout(() => {
       this.loading = false;
     }, 800);
-    this.setcharst();
+
+    this.$http.get(this.$api.goodsgroupcount).then(res => {
+      console.log(res, 111);
+      if (res.data.code == 200) {
+        res.data.list.map(item => {
+          this.orderTitle.push(item.catename);
+          this.orderData.push(item.count);
+        });
+        this.setcharst(this.orderTitle, this.orderData);
+      } else {
+        setTimeout(() => {
+          this.loading = false;
+          this.$notify({
+            title: "失败",
+            message: res.data.msg,
+            type: "error"
+          });
+          this.$router.push("/");
+        }, 1000);
+      }
+    });
+    this.$http.get(this.$api.usergroupcount).then(res => {
+      if (res.data.code == 200) {
+        res.data.list.map(item => {
+          if (item.roleid == 1) {
+            this.usergroup.push({ value: item.count, name: "管理员" });
+          } else {
+            this.usergroup.push({ value: item.count, name: "客服" });
+          }
+          this.pancake(this.usergroup);
+        });
+      } else {
+        setTimeout(() => {
+          this.loading = false;
+          this.$notify({
+            title: "失败",
+            message: res.data.msg,
+            type: "error"
+          });
+          this.$router.push("/");
+        }, 1000);
+      }
+    });
   },
   methods: {
-    setcharst() {
+    pancake(data) {
+      this.cake = echarts.init(document.getElementById("admin"));
+      var option = {
+        tooltip: {
+          trigger: "item",
+          formatter: "{a} <br/>{b}: {c} ({d}%)"
+        },
+        legend: {
+          orient: "vertical",
+          left: 10,
+          data: ["管理员", "客服"]
+        },
+        series: [
+          {
+            name: "注册管理量",
+            type: "pie",
+            radius: ["30%", "70%"],
+            avoidLabelOverlap: false,
+            label: {
+              show: false,
+              position: "center"
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: "30",
+                fontWeight: "bold"
+              }
+            },
+            labelLine: {
+              show: false
+            },
+            data
+          }
+        ]
+      };
+      this.cake.setOption(option);
+    },
+    setcharst(title, data) {
       // 基于准备好的dom，初始化echarts实例
       this.charts = echarts.init(document.getElementById("main"));
 
       // 指定图表的配置项和数据
       var option = {
         title: {
-          text: "商城销量"
+          text: "商品数量"
         },
         tooltip: {},
         legend: {
-          data: ["销量"]
+          data: ["数量"]
         },
         xAxis: {
-          type:'category',
-          data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"]
+          type: "category",
+          data: title
         },
         yAxis: {},
         series: [
           {
             name: "销量",
             type: "line",
-            data: this.orderData
+            data
           }
         ]
       };
@@ -61,5 +145,8 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.echa {
+  display: flex;
+}
 </style>

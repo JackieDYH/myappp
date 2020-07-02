@@ -103,8 +103,8 @@ export default {
 .addbtn {
   margin-bottom: 10px;
 }
-.el-table td,
+/* .el-table td,
 .el-table th {
   text-align: center;
-}
+} */
 </style>

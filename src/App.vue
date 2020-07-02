@@ -1,6 +1,13 @@
 <template>
   <router-view id="app"></router-view>
 </template>
+<script>
+export default {
+  name: 'App',
+  components:{
+    }
+}
+</script>
 <style>
 #app{
   width: 100%;
@@ -16,11 +23,9 @@
   float: right;
   margin-top: 6px;
 }
-</style>
-<script>
-export default {
-  name: 'App',
-  components:{
-  }
+/* 表格居中 */
+.el-table td,
+.el-table th {
+  text-align: center;
 }
-</script>
+</style>

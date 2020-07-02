@@ -16,6 +16,7 @@ const   rolelist ='/api/rolelist',
         roledelete = '/api/roledelete';
 // 用户接口
 const   usercount = '/api/usercount',
+        usergroupcount = '/api/usergroupcount',
         userlist = '/api/userlist',
         useradd = '/api/useradd',
         userinfo = '/api/userinfo',
@@ -42,7 +43,8 @@ const   goodscount = '/api/goodscount',
         goodsadd = '/api/goodsadd',
         goodsinfo = '/api/goodsinfo',
         goodsedit = '/api/goodsedit',
-        goodsdelete = '/api/goodsdelete';
+        goodsdelete = '/api/goodsdelete',
+        goodsgroupcount = '/api/goodsgroupcount';
 // 轮播图接口
 const   bannerlist = '/api/bannerlist',
         banneradd = '/api/banneradd',
@@ -67,10 +69,10 @@ export default {
     userlogin,register,
     menulist,menuadd,menuinfo,menuedit,menudelete,
     rolelist,roleadd,roleinfo,roleedit,roledelete,
-    usercount,userlist,useradd,userinfo,useredit,userdelete,
+    usercount,usergroupcount,userlist,useradd,userinfo,useredit,userdelete,
     specscount,specslist,specsadd,specsinfo,specsedit,specsdelete,
     catepage,catecount,catelist,cateadd,cateinfo,cateedit,catedelete,
-    goodscount,goodslist,goodsadd,goodsinfo,goodsedit,goodsdelete,
+    goodscount,goodslist,goodsadd,goodsinfo,goodsedit,goodsdelete,goodsgroupcount,
     bannerlist,banneradd,bannerinfo,banneredit,bannerdelete,
     secklist,seckadd,seckinfo,seckedit,seckdelete,seckpage,seckcount,
     membercount,memberlist,memberinfo,memberedit,memberdelete

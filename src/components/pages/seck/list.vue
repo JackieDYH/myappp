@@ -141,7 +141,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .addbtn {
   margin-bottom: 10px;
 }
