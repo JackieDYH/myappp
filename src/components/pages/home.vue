@@ -20,6 +20,7 @@ export default {
       loading: true,
       orderTitle: [],
       orderData: [],
+      userTile: [],
       usergroup: [],
       charts: ""
     };
@@ -31,7 +32,6 @@ export default {
     }, 800);
 
     this.$http.get(this.$api.goodsgroupcount).then(res => {
-      console.log(res, 111);
       if (res.data.code == 200) {
         res.data.list.map(item => {
           this.orderTitle.push(item.catename);
@@ -53,13 +53,10 @@ export default {
     this.$http.get(this.$api.usergroupcount).then(res => {
       if (res.data.code == 200) {
         res.data.list.map(item => {
-          if (item.roleid == 1) {
-            this.usergroup.push({ value: item.count, name: "管理员" });
-          } else {
-            this.usergroup.push({ value: item.count, name: "客服" });
-          }
-          this.pancake(this.usergroup);
+            this.userTile.push(item.rolename);
+            this.usergroup.push({ value: item.count, name: item.rolename });
         });
+        this.pancake(this.userTile,this.usergroup);
       } else {
         setTimeout(() => {
           this.loading = false;
@@ -74,7 +71,7 @@ export default {
     });
   },
   methods: {
-    pancake(data) {
+    pancake(title,data) {
       this.cake = echarts.init(document.getElementById("admin"));
       var option = {
         tooltip: {
@@ -84,7 +81,7 @@ export default {
         legend: {
           orient: "vertical",
           left: 10,
-          data: ["管理员", "客服"]
+          data: title
         },
         series: [
           {
